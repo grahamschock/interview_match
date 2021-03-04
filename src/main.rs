@@ -7,20 +7,27 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 struct Record {
     Timestamp: String,
-    city: String,
-    region: String,
-    country: String,
-    population: Option<u64>,
+    First_Name: String,
+    Last_Name: String,
+    Times: String,
 }
 
+struct Student {
+    fname: String,
+    lname: String,
+    time: Vec<String>,
+}
 fn example() -> Result<(), Box<dyn Error>> {
+    let mut count = 0;
     let mut rdr = csv::Reader::from_reader(io::stdin());
     for result in rdr.deserialize() {
         // Notice that we need to provide a type hint for automatic
         // deserialization.
         let record: Record = result?;
         println!("{:?}", record);
+        count = count + 1;
     }
+    println!("{}", count);
     Ok(())
 }
 
