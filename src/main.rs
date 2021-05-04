@@ -1,7 +1,6 @@
 use std::error::Error;
 use std::io;
 use std::process;
-use std::char;
 
 use serde::Deserialize;
 
@@ -51,29 +50,33 @@ fn example() -> Result<(), Box<dyn Error>> {
 
         if record.isStudent == 1 {
             students.push(student);
+            count+=1;
         } else {
             instructors.push(student);
         }
-        count = count + 1;
     }
     students.sort_by(|a, b| a.time.len().cmp(&b.time.len()));
     instructors.sort_by(|a,b| a.time.len().cmp(&b.time.len()));
 
+
     for instructor in instructors.iter() {
+        let mut assignments = 0;
         println!("INSTRUCTOR: {}------", instructor.fname);
         for time1 in instructor.time.iter() {
             let index = find_student(time1.to_string(), &students);
-            if index != None {
+            if index != None && assignments <= (((count - 1) / 3)){
+                println!("STUDENT: {}", students[index.unwrap()].fname);
+                println!("TIME: {}", time1);
+                assignments += 1;
                 students.remove(index.unwrap());
             }
-
         }
     }
-    println!("-------STUDENTS-----");
+    println!("-------STUDENTS LEFT-----");
     println!("{:?}", students);
-    println!("-------INSTRUCTORS--------");
-    println!("{:?}", instructors);
-
+    // println!("-------INSTRUCTORS--------");
+    // println!("{:?}", instructors);
+    println!("NUM STUDENTS: {}", count);
     Ok(())
 }
 
@@ -83,8 +86,8 @@ fn find_student(time: String, students: &Vec<Person>) -> Option<usize> {
     for student in students.iter() {
         let index = student.time.iter().position(|r| r.trim_start().eq(&time1));
         if index != None {
-            println!("{}", student.fname);
-            println!("{}", student.time[index.unwrap()]);
+            // println!("STUDENT: {}", student.fname);
+            // println!("TIME: {}", student.time[index.unwrap()]);
             return Some(count);
         }
         count = count + 1;
